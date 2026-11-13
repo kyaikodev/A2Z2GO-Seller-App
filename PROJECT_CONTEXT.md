@@ -3,7 +3,7 @@
 This file is the shared memory for any AI (or person) who opens this repo.
 It says what the app is, what state it is in, what the owner has decided, and
 what changed. **Every change must also update this file** (see `CLAUDE.md`).
-Last updated: 2026-11-11.
+Last updated: 2026-11-13.
 
 ## 1. What this is
 
@@ -183,6 +183,12 @@ still fails, use "Show the page" > "Grab comments" or "Paste comments".
 ### Session log (newest first). Add an entry here before EVERY commit.
 Each entry: what the owner asked, what changed (files), why, what was learned (the clues), what is still open.
 `test/project_context_test.dart` fails if the current `pubspec.yaml` version is not written in this file.
+
+**2026-11-13, app walkthrough for the owner's manager** (documentation only, version stays 1.0.31+32)
+- *Asked:* a detailed step-by-step explanation of the whole app, from start to finish, to email to the owner's boss; make it an .md, commit and push.
+- *Done:* new `APP_WALKTHROUGH.md` in the repo root: the app in one minute, install, 15 numbered steps (sign-in, Home, add product, product page and stock, find products, create and move orders, returns, expenses, loyalty, Insights, social proof, sharing and the buyer page, Me and sample data, backup/sign-out/erase), rules the app enforces, how it is built, what is not done, next steps, a 10-minute demo script and a glossary. Every screen name, button label, default (loyalty ₱100 = 1 point, 1 point = ₱1), status and limit was checked against the code before it was written. Linked from `README.md` and `notes/INDEX.md`; `CLAUDE.md` now says to keep it in step with feature changes.
+- *Decision:* written for a non-technical reader, honest about limits (test-mode sign-in, data only on the phone, buyer cart is a placeholder, Android only, tested on one phone). No personal details, accounts or file paths in it.
+- *Open:* no screenshots in it (none are stored in the repo); the owner may want pictures for the email.
 
 **2026-11-13, product page tidy-up** (version 1.0.31+32)
 - *Asked (phone screenshot of the product page):* the page is messy: one long description took most of the screen and everything else was pushed down; "stuff like this seems unprofessional", is it not in the skills?
@@ -433,6 +439,7 @@ The fourth video was a promo for a paid design MCP (`seenry.design`). Not instal
 | 2026-11-12 | squashed | **Swipe and polish** (owner's request): swiping the "What people are saying" area left or right changes the social tab (fast horizontal swipe only; the first and last tab stop the swipe), with a plain 0.1 s fade (the first version slid and animated the height; the owner found it dizzy and it was removed in 1.0.22), a dot row showing the position, a count pill on each tab, ripple on tabs, tinted source-post row with the platform icon when there is no picture, "Comments N" heading, "See all" button with an arrow, empty state with an icon, a note with a shield icon, soft shadow; animations off when the phone asks for reduced motion. The session story was written into this file. 1 test extended for swiping (104 total); version 1.0.21+22. Not seen on the phone yet |
 | 2026-11-12 | squashed | Social tabs (owner's request): the socials sit side by side as browser-style tabs (icon, name, comment count; the chosen tab is white with a coloured top edge) on both the buyer page and the seller's proof section, so other socials need no scrolling; the tab strip scrolls sideways if many; `PlatformSectionHeader` removed; version 1.0.20+21 |
 | 2026-11-12 | squashed | **Social proof redesign** (owner's request): the buyer page shows one quiet card per social (platform pill + count, source post with picture, 2-line caption and "View original", then 3 comments as soft chat bubbles, then "See all N comments" which opens a bottom sheet that scrolls by itself); the seller's post card uses the same bubbles and sheet (remove button kept). TikTok's caption now comes from the page data instead of the generic "TikTok - Make Your Day" (old saved titles like that are hidden). Avatars take the first whole letter (fancy letters no longer break into a box) or a person icon. New `lib/widgets/proof_cards.dart`; `CommentAvatar` moved to `widgets/social.dart`; 3 new tests (104 total); version 1.0.19+20. Not checked by eye on the phone yet |
+| 2026-11-13 | (this commit) | **App walkthrough** (`APP_WALKTHROUGH.md`): a plain-language step-by-step tour of the whole app for the owner's manager, linked from README and the notes index; documentation only |
 | 2026-11-13 | squashed | **Product page tidy-up**: long descriptions fold to three lines with Read more (seller and buyer pages), a cost of zero shows "Not set" instead of a 100% margin; version 1.0.31+32, 122 tests |
 | 2026-11-13 | squashed | **One connected app**: Category, Brand and Customer are pick lists of what already exists (with Add new and a starter category list); required fields have a red star and a failed save scrolls to the first missing one; a product needs a photo and a 20-letter description before it can be shared; comment name required; version 1.0.30+31, 122 tests |
 | 2026-11-13 | squashed | **Plain words, add-by-hand box, sorting**: unsupported sites (Shopee, Lazada, other links) say so instead of showing junk; failed screens use everyday words with the technical report behind "More details"; new "Add comments yourself" box (name optional + comment, running list, paste many at once); "Positive first" sort chip; version 1.0.29+30, 122 tests |

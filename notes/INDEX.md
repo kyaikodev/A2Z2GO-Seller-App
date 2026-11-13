@@ -5,6 +5,7 @@ on a new computer) can find it. Keep personal or private things out of this fold
 GitHub with the project.
 
 ## Start here
+- [[../APP_WALKTHROUGH]]: the plain-language, step-by-step tour of the whole app (made to be emailed to a manager)
 - [[../PROJECT_CONTEXT]]: what the app is, the rules, the current state and every change
 - [[../REVIEW]]: full inspection, 27 findings and how each was handled
 - [[../SETUP]]: how to set up a new computer

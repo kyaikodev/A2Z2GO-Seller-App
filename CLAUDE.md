@@ -10,6 +10,8 @@
      anything now working or no longer true;
    - update the layout (section 3) if files or folders moved, and section 7 if
      next steps changed.
+   - if a feature, screen, rule or limit changed, update `APP_WALKTHROUGH.md` too (the plain-language tour the owner
+     sends to their manager); never let it describe something the app no longer does;
    Keep it short, factual and current. Fix anything that is no longer true.
    Never put secrets, passwords, emails or personal paths in it.
 3. Follow the owner's rules in section 2 (especially: no deployment work yet, ask

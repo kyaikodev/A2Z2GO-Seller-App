@@ -2,6 +2,10 @@
 
 Seller-side app (Android, Flutter). No backend yet: everything is saved on the phone.
 
+**New to the app? Read [`APP_WALKTHROUGH.md`](APP_WALKTHROUGH.md):** a step-by-step tour of the whole app, from sign-in to
+sales reports, with what is done, what is not, and a 10-minute demo script. It is written to be shared with someone who has
+never seen the app.
+
 ## Run it
 
 ```
