@@ -205,11 +205,15 @@ Future<void> runFlow(WidgetTester t) async {
     await t.tap(find.text('Home').last);
     await settle(t);
     expect(find.text('₱200.00'), findsWidgets); // sales today
-    await t.tap(find.text('Insights').last);
+    await t.tap(find.text('Menu').last); // Insights now lives in the Menu
+    await settle(t);
+    await t.tap(find.text('Insights'));
     await settle(t);
     await reveal(t, find.text('Profit statement'));
     expect(find.text('Profit statement'), findsOneWidget);
     expect(find.text('₱80.00'), findsWidgets); // 200 - 2*60 profit
+    await t.pageBack();
+    await settle(t);
 
     // ---- my store: loyalty got points (200 / 100 = 2)
     await t.tap(find.text('Me').last);

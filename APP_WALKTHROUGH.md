@@ -34,7 +34,7 @@ Everything is stored **on the seller's phone**. There is no server yet (see sect
 | Sign-in | Mobile number + one-time code (the code is shown on screen for now) |
 | Currency | Philippine peso (₱); phone numbers are Philippine mobiles |
 | Automated checks | 122 automatic tests pass; the code analyser reports no problems |
-| Main screens | Home · Orders · Products · Insights · Me |
+| Main screens | Menu · Products · Home · Orders · Me |
 | Tested on | The owner's Android phone. Not yet tested on iPhone or on many different Android phones |
 
 ---
@@ -63,7 +63,7 @@ Everything is stored **on the seller's phone**. There is no server yet (see sect
 
 ### Step 2: The Home screen
 
-The bottom bar has five tabs: **Home, Orders, Products, Insights, Me**.
+The bottom bar (same order as the A2Z2GO website on a phone) has five tabs: **Menu, Products, Home, Orders, Me**. Home starts with a search bar; **Menu** opens Insights, Expenses and Loyalty points.
 
 Home shows, from top to bottom:
 
@@ -71,6 +71,7 @@ Home shows, from top to bottom:
 - **Net sales today**, the one big number;
 - an **Orders** card with a **View all** link;
 - **Quick actions**: **Add product** and **New order**;
+- **Your products**: up to six product tiles in two columns, like the website (photo, name, orange price), with **See all**;
 - **Sales · last 7 days**, a small chart;
 - **Stock alerts**: products that are low or out of stock.
 
@@ -172,7 +173,7 @@ customer's points; open one to **Redeem**, **Adjust**, or read the **History**. 
 
 ### Step 11: Insights (sales and profit)
 
-Insights tab, with **7 days / 30 days** switches. It shows **Net sales** and **Net profit** up top, then:
+Menu → Insights, with **7 days / 30 days** switches. It shows **Net sales** and **Net profit** up top, then:
 
 - **Profit statement**, line by line: Gross sales, Discounts given, Refunds, **Net sales**, Cost of goods sold, Damaged /
   lost stock, Expenses, **Net profit**, and Average order;
@@ -215,7 +216,7 @@ Product page → **Buyer page → Share and preview** (available once the produc
   photo attached), plus **Copy link**;
 - **Preview as buyer**: shows exactly what a buyer will see.
 
-The **buyer page** shows the product photos, price, name, the seller, the description, and a section
+The **buyer page** shows the product photos, then (in the same order as the A2Z2GO website) the name, SKU, vendor, the orange price and the stock, then the description, and a section
 **"What people are saying"**: the social proof as **tabs** (Facebook, TikTok, Instagram…) that can be tapped or
 **swiped**, each showing three comments, a link to the original post, and a **See all** button for the rest. If nothing
 is touched for a few seconds, the next tab opens by itself.

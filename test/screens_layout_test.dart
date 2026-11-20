@@ -204,7 +204,11 @@ void main() {
       s.updateProduct(product);
 
       final screens = <String, Widget>{
-        'dashboard': DashboardScreen(onGoTab: (_) {}, onGoOrders: (_) {}),
+        'dashboard': DashboardScreen(
+          onGoTab: (_) {},
+          onGoOrders: (_) {},
+          onSearch: (_) {},
+        ),
         'products': const ProductsScreen(),
         'product detail': ProductDetailScreen(productId: product.id),
         'product form (add)': const ProductFormScreen(),

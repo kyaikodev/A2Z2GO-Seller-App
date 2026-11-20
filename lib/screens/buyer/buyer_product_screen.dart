@@ -91,60 +91,60 @@ class _BuyerProductScreenState extends State<BuyerProductScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  peso(p.price),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: Brand.primary,
-                  ),
-                ),
-                const SizedBox(height: 4),
+                // The same order as the website's product page: title, SKU,
+                // vendor, orange price, stock.
                 Text(
                   p.name,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    if (p.brand.isNotEmpty) StatusChip(p.brand, Brand.info),
-                    StatusChip(p.category, Brand.muted),
-                    soldOut
-                        ? const StatusChip('Sold out', Brand.bad)
-                        : p.isLow
-                        ? StatusChip('Only ${p.stock} left', Brand.warn)
-                        : const StatusChip('In stock', Brand.good),
-                  ],
+                const SizedBox(height: 4),
+                Text(
+                  'SKU: ${p.sku}${p.brand.isEmpty ? '' : ' · ${p.brand}'}',
+                  style: const TextStyle(color: Brand.muted, fontSize: 13),
                 ),
-              ],
-            ),
-          ),
-          const Divider(height: 28),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                CommentAvatar(shop, radius: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 12),
+                Text.rich(
+                  TextSpan(
+                    text: 'Vendor : ',
+                    style: const TextStyle(color: Brand.muted),
                     children: [
-                      Text(
-                        shop,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                      const Text(
-                        'Seller',
-                        style: TextStyle(color: Brand.muted, fontSize: 13),
+                      TextSpan(
+                        text: shop,
+                        style: const TextStyle(
+                          color: Brand.navy,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  peso(p.price),
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    color: Brand.price,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  soldOut
+                      ? 'Out of stock'
+                      : p.isLow
+                      ? 'Only ${p.stock} left'
+                      : 'In stock',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: soldOut
+                        ? Brand.bad
+                        : p.isLow
+                        ? Brand.warn
+                        : Brand.good,
                   ),
                 ),
               ],

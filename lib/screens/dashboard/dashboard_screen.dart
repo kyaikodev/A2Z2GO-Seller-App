@@ -7,6 +7,8 @@ import '../../data/reports.dart';
 import '../../widgets/bar_chart.dart';
 import '../../widgets/common.dart';
 import '../../widgets/scope.dart';
+import '../../widgets/site_blocks.dart';
+import '../../widgets/site_header.dart';
 import '../orders/order_form_screen.dart';
 import '../products/product_detail_screen.dart';
 import '../products/product_form_screen.dart';
@@ -22,10 +24,14 @@ String _greeting() {
 class DashboardScreen extends StatelessWidget {
   final void Function(int tab) onGoTab;
   final void Function(int ordersTab) onGoOrders;
+
+  /// When given, the website-style search bar shows at the top.
+  final void Function(String query)? onSearch;
   const DashboardScreen({
     super.key,
     required this.onGoTab,
     required this.onGoOrders,
+    this.onSearch,
   });
 
   void _push(BuildContext context, Widget page) =>
@@ -67,19 +73,17 @@ class DashboardScreen extends StatelessWidget {
         .toUpperCase();
 
     return Scaffold(
-      backgroundColor: Brand.background,
+      backgroundColor: Colors.white,
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
+          if (onSearch != null) SiteHeader(onSearch: onSearch!),
           // ---- Red header: shop + today's numbers
           Container(
-            decoration: const BoxDecoration(
-              color: Brand.primary,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-            ),
+            color: Brand.primary,
             padding: EdgeInsets.fromLTRB(
               16,
-              MediaQuery.paddingOf(context).top + 16,
+              onSearch != null ? 16 : MediaQuery.paddingOf(context).top + 16,
               16,
               20,
             ),
@@ -241,6 +245,35 @@ class DashboardScreen extends StatelessWidget {
                         _push(context, const ProductFormScreen()),
                     onGoProducts: () => onGoTab(Tabs.products),
                     onNewOrder: () => _push(context, const OrderFormScreen()),
+                  ),
+                ],
+                if (hasProducts) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Your products',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Brand.navy,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => onGoTab(Tabs.products),
+                        child: const Text('See all'),
+                      ),
+                    ],
+                  ),
+                  ProductGrid(
+                    products: store.products
+                        .where((p) => p.active)
+                        .take(6)
+                        .toList(),
+                    onOpen: (p) =>
+                        _push(context, ProductDetailScreen(productId: p.id)),
                   ),
                 ],
                 const SizedBox(height: 12),

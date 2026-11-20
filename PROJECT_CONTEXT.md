@@ -99,8 +99,8 @@ Desktop as `A2Z2GO-Seller.apk` (never committed; `apk/` and `build/` are ignored
 
 ## 5. Current state (update this section when it changes)
 
-- Analyzer clean. **122 tests pass** (last run 2026-11-12). A release APK builds
-  (55 MB). It has not been installed or tested on a phone by the AI yet.
+- Analyzer clean. **122 tests pass** (last run 2026-11-20). A release APK builds
+  (57 MB, 1.0.32+33 on 2026-11-20; needs the JAVA_TOOL_OPTIONS fix in the Session log). It has not been installed or tested on a phone by the AI yet.
 - Working: sign-in/out, new-seller setup, products with photos, inventory moves,
   orders (Pending > Packed > Shipped > Completed, cancel, delete), returns and
   refunds, expenses, loyalty points, dashboard, analytics, sample data, erase all
@@ -183,6 +183,29 @@ still fails, use "Show the page" > "Grab comments" or "Paste comments".
 ### Session log (newest first). Add an entry here before EVERY commit.
 Each entry: what the owner asked, what changed (files), why, what was learned (the clues), what is still open.
 `test/project_context_test.dart` fails if the current `pubspec.yaml` version is not written in this file.
+
+**2026-11-20, Martfury look, step 1** (version 1.0.32+33; APK 1.0.32+33 built and uploaded after solving a Java loopback problem, see below; not committed, the owner said to hold the commit)
+- *Asked:* the manager uses the a2z2go.com website in phone view and wants the app to look and feel the same ("Martfury" is the website's theme; she sent a Google search about the MartFury Flutter template, not a purchase). The website runs on Magento (confirmed: its code names Magento and Martfury, not Botble). Decision with the owner: **recreate the Martfury look in Flutter** (colors, flat shapes, search bar, bottom bar, tiles); do not buy or use the paid MartFury Flutter template (it is made for a different backend, Botble). The Magento connection waits for dev2 (down: a missing `Ced\AdvanceSearch` seller class).
+- *Website look (checked on the live phone view):* white page, red `#E30500` logo, yellow Search button, orange-red prices, Work Sans, square corners, bottom bar Menu / Search / Home / My Cart / Me, banner slideshow, badges (min order, 7-day return, secure payment).
+- *Done (step 1):* `lib/core/theme.dart`: corner sizes now 2/4/6/8 (were 8/12/16/24), white page, cards get a thin line, bottom-bar pill removed; `dashboard_screen.dart`: white page and a flat red header. Already matching before: red, yellow, Work Sans.
+- *Done (step 2):* Home now starts with the website header: the red tag logo, a search bar and a yellow Search button (`lib/widgets/site_header.dart`); searching opens the Products tab with that text (`ProductsScreen.queryFrom`). The bottom bar now follows the website's order: **Menu, Products, Home, Orders, Me** (the website's "Search" is our Products, its "My Cart" is our Orders, because a seller has no cart). New `lib/screens/menu_screen.dart` (Menu tab: Insights, Expenses, Loyalty points). Insights is no longer a tab; `Tabs.insights` (99) opens it as a page. `Tabs` numbers changed (menu 0, products 1, home 2, orders 3, me 4). Tests updated: `app_flow_test` opens Insights through the Menu; the layout test passes `onSearch` so the header is checked at tiny size and largest fonts. 122 tests.
+- *Done (step 3):* Home now has, under Quick actions, a "Your products" section with up to 6 tiles in two columns (`lib/widgets/site_blocks.dart`: `ProductTile`, `ProductGrid`): square photo, name (2 lines), orange-red price (`Brand.price` #D92B00, the site's orange darkened to read on white), "Out of stock" note; "See all" opens Products; a tile opens the product page. Rows grow with the text so large fonts do not overflow (the layout test covers it at tiny size and largest fonts). 122 tests.
+- *Badges removed (owner):* the website's four badges (minimum order of ₱350, 7 days return, secure payment, 24/7 support) were first added to Home and then taken out the same day: they are for buyers and do not apply to the seller side. Rule: the seller screens do not show buyer promises; adjust again once the seller side of the website is known.
+- *Owner's verdict after step 4:* "still does not feel like the website", but good enough for now; adjust later when the seller side of the website (dev2) is seen. The owner asked for a build to test on the phone.
+- *APK build trouble, SOLVED (read this before building):* `flutter build apk --release` stopped after a few seconds with "java.io.IOException: Unable to establish loopback connection" (Gradle's client could not talk to its own daemon). It was NOT the company firewall (my first guess was wrong) and NOT the Java version. The stack trace showed Java's internal pipe (`PipeImpl`) first tries a Unix-domain socket file in the temp folder, and `connect` failed with "Invalid argument"; this computer's TEMP is a Windows short path (`C:\Users\DAVID~1.BEN\AppData\Local\Temp`; the user name has a dot). **Fix: build with the environment variable `JAVA_TOOL_OPTIONS=-Djdk.net.unixdomain.tmpdir=C:\Users\David.Benitez\javatmp`** (a plain folder; in PowerShell: `$env:JAVA_TOOL_OPTIONS="-Djdk.net.unixdomain.tmpdir=C:\Users\David.Benitez\javatmp"; flutter build apk --release`). It applies only to that command. Done during the search: a fresh Temurin JDK 21 (fingerprint checked) was unpacked to `AppData\Local\Programs\jdk21\x\jdk-21.0.13+9` and Flutter's `jdk-dir` now points to it (the old Temurin 17 is still in `Programs\jdk17`). Another trap: a failed build leaves the OLD `app-release.apk` in `build/app/outputs/flutter-apk/`; check its date before copying it anywhere (one old APK was copied by mistake on 2026-11-20, caught at once, deleted, never uploaded).
+- *APK 1.0.32+33 built 2026-11-20 09:12 (57 MB)*, copied to the Desktop as `A2Z2GO-Seller-v1.0.32+33.apk` and uploaded to the shared Google Drive folder; the old 1.0.31+32 file was moved to the Bin (upload first, then bin; local server stopped). Not committed (owner said to hold the commit). Not yet tried on a phone.
+- *Left out on purpose:* the banner slideshow (no real pictures yet; they will come from Magento) and the old price + "-50%" badge (the Product model has no old/special price; add one when the Magento connection brings it, not before, to avoid a field nobody can fill).
+- *Done (step 4):* the buyer product page (`buyer_product_screen.dart`) now follows the website's product page order: title, "SKU: … · brand", "Vendor : shop", the orange price (`Brand.price`), then the stock line (In stock / Only N left / Out of stock, in green / amber / red). The price chips and the separate "Seller" row were removed (the vendor line says the same). 122 tests.
+- *Not changed:* the seller's own product detail page (`product_detail_screen.dart`, edit and stock buttons); it is a working screen, not a shop page.
+- *Next steps:* the Products tab as a tile grid, the seller product page if the manager wants it closer to the site, then the Magento connection once dev2 is back.
+- *How the screenshots were made:* a temporary widget test drew the screens to PNG (needs the Material icon font loaded from the Flutter SDK; tests do not load it by themselves); the test file was deleted. A Windows Firewall pop-up for `adb` appears when Flutter starts; Cancel is fine (managed by the company, tests do not need it).
+
+**2026-11-19, manager emails and the dev2 test website** (documentation only, version stays 1.0.31+32)
+- *Asked:* after the demo email, the manager wrote about a seller ("Kegg", Marikina) that does not show in the website's search by seller name or city, then asked "how can seller registration be made online to match the app?". The owner replied (polite, plain words) that the app is test mode with data only on the phone, that the website and its backend belong to another team, and asked what exactly she means and for complete instructions.
+- *What we found:* the a2z2go.com seller registration page ("Start Selling", OTP and captcha) has no city field; the app has no seller registration with a city (only an optional store address for pickup). The two do not match, and the app has no online database. Nothing in the app was changed.
+- *Outcome (from the owner, after a meeting):* the owner has no access to the website's backend. The manager told them to call a phone number to get a test login for the **dev2 a2z2go website** (a test copy, no rollout yet) so they can test against it. The owner will ask for it by Viber/phone. **Do not write the login, password or phone number in this repo (public).**
+- *Screenshots:* 8 screenshots of the emails and website pages were uploaded to a "Screenshots" folder inside the shared A2Z2GO Drive folder (the owner chose that place; anyone with the folder link can open them).
+- *Open:* get the dev2 address and a test account; find out what the website registration and search need (city field, how sellers appear in search); decide with the owner and manager whether the app should register sellers online (needs a backend). Test only on dev2.
 
 **2026-11-19, emailing the demo and tidying Drive** (documentation only, version stays 1.0.31+32)
 - *Asked:* how to email the video and PDF to the manager, and organise the Drive folder so the owner shares a link to the video, not the file.
@@ -418,7 +441,20 @@ The fourth video was a promo for a paid design MCP (`seenry.design`). Not instal
 - **Buyer comments** (owner's idea, not started, talk first): real buyer comments need a server to store
   them, buyer sign-in or a name, moderation and report buttons, and spam limits. Without a server the app
   can only keep a buyer's note on that buyer's own phone. Decide the approach with the owner first.
-- Connecting to the A2Z2GO website (likely Magento) belongs with the backend work below.
+- Connecting to the A2Z2GO website (likely Magento) belongs with the backend work below. A test copy
+  (the "dev2" website) is promised by the manager; test only there, never on the live site. The seller
+  registration page there has no city field, which is probably why sellers do not show in search by city.
+- **Magento connection, what the public docs say (2026-11-20, owner tested the 1.0.32+33 look on a phone and had no
+  preference for the next step, so this no-code research was chosen):** standard Magento has a REST API
+  (`POST /rest/<store>/V1/products` etc.) and the user type decides access: admin and integration tokens can create
+  products, customers and guests are limited to their own or public resources. **Never put an admin or integration token
+  inside the app** (anyone can pull it out of the APK); a seller-scoped login or a small server in between is needed. The
+  site's seller sign-up is the CedCommerce marketplace add-on (`csmarketplace` in the address, `Ced\AdvanceSearch` in the
+  error page); I found no public documentation of a seller REST API for it, so the dev team must say whether one exists.
+  Questions for the dev team: (1) does the Ced marketplace offer a seller login/token and endpoints to add products and
+  register sellers, or must the app talk to a small server we build? (2) can a seller account be given only its own
+  products? (3) where is the city stored and can the registration collect it? Ready-made apps for such stores exist (for
+  example MageNative's "Advance Seller App"); not checked whether it fits this site.
 - Pick the next feature or fix with the owner.
 - When a backend exists: real `OtpSender`, replace local storage in `AppStore`.
 - Before publishing (not now): release keystore via git-ignored `android/key.properties`,
@@ -428,6 +464,7 @@ The fourth video was a promo for a paid design MCP (`seenry.design`). Not instal
 
 | Date | Commit | What changed |
 |------|--------|--------------|
+| 2026-11-20 | (this commit) | **Martfury look, steps 1 to 4**: flatter corners, white page, thin card lines, flat red header; website-style header with yellow search on Home; bottom bar Menu / Products / Home / Orders / Me with a new Menu screen (Insights, Expenses, Loyalty points); a product tile grid on Home; buyer product page in the website's order (title, SKU, vendor, orange price, stock); notes on the dev2 site and the Magento decision; 122 tests; version 1.0.32+33 |
 | 2026-11-19 | (this commit) | **Email and Drive notes** (documentation only): how the demo video (as a Drive link) and the showcase PDF are emailed, and the Drive sharing lessons; earlier "(this commit)" rows marked squashed; history squashed into one fresh commit; version 1.0.31+32 |
 | 2026-11-12 | squashed | **Fixed a regression I caused in 1.0.7:** a pattern in the reader script lost its backslashes, so the whole script was invalid JavaScript and read nothing on every site (Facebook too). Fixed, and a new test (needs Node; skipped without it) checks the scripts parse; 109 tests; version 1.0.10+11 |
 | 2026-11-12 | squashed | "Copy debug info" now shows on the failed-reading screen in the normal app (temporary, to diagnose a Facebook reading problem); version 1.0.10+11 |

@@ -8,6 +8,9 @@ class Brand {
   static const Color primary = Color(0xFFE30500);
   static const Color primaryDark = Color(0xFFB90400);
   static const Color accent = Color(0xFFFCB800);
+  static const Color price = Color(
+    0xFFD92B00,
+  ); // the website's orange-red, darkened to read on white
   static const Color navy = Color(0xFF1A1A1F); // main text
   static const Color background = Color(0xFFF5F5F7);
   static const Color card = Colors.white;
@@ -29,10 +32,11 @@ class Brand {
 
 /// Corner radii.
 class Rd {
-  static const double sm = 8;
-  static const double md = 12;
-  static const double lg = 16;
-  static const double xl = 24;
+  // Flat, like the A2Z2GO website (Martfury look): small corners everywhere.
+  static const double sm = 2;
+  static const double md = 4;
+  static const double lg = 6;
+  static const double xl = 8;
 }
 
 /// Motion: short and purposeful.
@@ -143,7 +147,7 @@ ThemeData buildTheme() {
     colorScheme: scheme,
     fontFamily: _font,
     textTheme: _textTheme(),
-    scaffoldBackgroundColor: Brand.background,
+    scaffoldBackgroundColor: Colors.white, // the website page is plain white
     splashFactory: InkSparkle.splashFactory,
     visualDensity: VisualDensity.standard,
     materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -195,7 +199,11 @@ ThemeData buildTheme() {
       elevation: 0,
       margin: EdgeInsets.zero,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Rd.md)),
+      // A thin line instead of a shadow, because the page is white now.
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Rd.md),
+        side: const BorderSide(color: Brand.line),
+      ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -271,7 +279,7 @@ ThemeData buildTheme() {
       elevation: 8,
       shadowColor: const Color(0x26101828),
       height: 68,
-      indicatorColor: Brand.primary.withValues(alpha: 0.10),
+      indicatorColor: Colors.transparent, // the website bar has no pill
       indicatorShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Rd.xl),
       ),

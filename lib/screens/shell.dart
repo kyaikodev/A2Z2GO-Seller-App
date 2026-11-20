@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 
 import 'analytics/analytics_screen.dart';
 import 'dashboard/dashboard_screen.dart';
+import 'menu_screen.dart';
 import 'orders/orders_screen.dart';
 import 'products/products_screen.dart';
 import 'store/my_store_screen.dart';
 
-/// Bottom-bar positions.
+/// Bottom-bar positions, in the same order as the website's phone bar
+/// (Menu, Search, Home, Cart, Me).
 class Tabs {
-  static const home = 0;
-  static const orders = 1;
-  static const products = 2;
-  static const insights = 3;
+  static const menu = 0;
+  static const products = 1;
+  static const home = 2;
+  static const orders = 3;
   static const me = 4;
+
+  /// Not a tab: it lives in the Menu and opens as its own page.
+  static const insights = 99;
 }
 
 class Shell extends StatefulWidget {
@@ -32,29 +37,54 @@ class _ShellState extends State<Shell> {
   /// Tells the Orders screen which of its tabs to show.
   final _ordersTab = ValueNotifier<int>(0);
 
+  /// What the header's search bar typed; the Products tab shows it.
+  final _productQuery = ValueNotifier<String>('');
+
   void _go(int i) => setState(() {
     _index = i;
     _opened.add(i);
   });
+
+  /// Like [_go], but also knows the page that is not a tab (Insights).
+  void _goTab(int i) {
+    if (i == Tabs.insights) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
+      );
+    } else {
+      _go(i);
+    }
+  }
 
   void _goOrders(int ordersTab) {
     _ordersTab.value = ordersTab;
     _go(Tabs.orders);
   }
 
+  void _search(String q) {
+    _productQuery.value = q;
+    _go(Tabs.products);
+  }
+
   @override
   void dispose() {
     _ordersTab.dispose();
+    _productQuery.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final pages = [
-      DashboardScreen(onGoTab: _go, onGoOrders: _goOrders),
+      const MenuScreen(),
+      ProductsScreen(queryFrom: _productQuery),
+      DashboardScreen(
+        onGoTab: _goTab,
+        onGoOrders: _goOrders,
+        onSearch: _search,
+      ),
       OrdersScreen(jumpTo: _ordersTab),
-      const ProductsScreen(),
-      const AnalyticsScreen(),
       const MyStoreScreen(),
     ];
     return PopScope(
@@ -76,25 +106,21 @@ class _ShellState extends State<Shell> {
           height: 64,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.receipt_long_outlined),
-              selectedIcon: Icon(Icons.receipt_long),
-              label: 'Orders',
-            ),
+            NavigationDestination(icon: Icon(Icons.menu), label: 'Menu'),
             NavigationDestination(
               icon: Icon(Icons.inventory_2_outlined),
               selectedIcon: Icon(Icons.inventory_2),
               label: 'Products',
             ),
             NavigationDestination(
-              icon: Icon(Icons.insights_outlined),
-              selectedIcon: Icon(Icons.insights),
-              label: 'Insights',
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.shopping_bag_outlined),
+              selectedIcon: Icon(Icons.shopping_bag),
+              label: 'Orders',
             ),
             NavigationDestination(
               icon: Icon(Icons.person_outline),

@@ -11,7 +11,9 @@ import 'product_form_screen.dart';
 enum _Filter { all, low, out, hidden }
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+  /// Text typed in the Home search bar; shown in this screen's search box.
+  final ValueNotifier<String>? queryFrom;
+  const ProductsScreen({super.key, this.queryFrom});
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -22,8 +24,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
   _Filter _filter = _Filter.all;
   String? _category;
 
+  void _fromHome() => setState(() => _search.text = widget.queryFrom!.value);
+
+  @override
+  void initState() {
+    super.initState();
+    widget.queryFrom?.addListener(_fromHome);
+    if (widget.queryFrom != null) _search.text = widget.queryFrom!.value;
+  }
+
   @override
   void dispose() {
+    widget.queryFrom?.removeListener(_fromHome);
     _search.dispose();
     super.dispose();
   }
