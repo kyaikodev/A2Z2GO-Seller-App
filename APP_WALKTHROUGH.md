@@ -41,7 +41,7 @@ Everything is stored **on the seller's phone**. There is no server yet (see sect
 
 ## 2. Before you start
 
-1. **Install the app.** Copy the app file (`A2Z2GO-Seller-v1.0.37+38.apk`) to an Android phone and open it. Android may
+1. **Install the app.** Copy the app file (`A2Z2GO-Seller-v1.0.38+39.apk`) to an Android phone and open it. Android may
    ask to allow installing from your files or browser; allow it for this one install.
 2. **Internet** is needed only for four things: autofilling a product from a web page, reading comments from social
    posts, loading product photos from a link, and sharing. Everything else works offline.
@@ -224,9 +224,17 @@ box of store promises, and grey tabs that open one at a time. Under the price a 
 **swiped**, each showing three comments, a link to the original post, and a **See all** button for the rest. If nothing
 is touched for a few seconds, the next tab opens by itself. The cart, share, search and menu buttons only look the part for now.
 
+> **Sample products share the sample page:** a product loaded with **Load sample data** shares the sample web page
+> below, so its link and QR code open on any phone (a blue note under the QR says so). Other products are unchanged.
+>
 > **Honest note:** if the product was imported from a web page, the link points to that real page. Otherwise it is a
 > placeholder address that becomes a real page once the shop server exists. The **Add to cart** button on the buyer page
 > is a placeholder for now.
+>
+> **Sample web page (published on GitHub Pages):** the buyer page also exists as a web page that opens from a link on any phone,
+> to see how a shared link will feel. It shows a few sample products with made-up comments (marked "Sample") and a
+> blue bar saying so; every button on it opens the real product page on the a2z2go.com website. It cannot show a
+> seller's own products, because those are only on the seller's phone until there is a server.
 
 ### Step 14: The Me tab and demo data
 

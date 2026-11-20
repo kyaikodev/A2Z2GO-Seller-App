@@ -30,8 +30,34 @@ class Site {
   static const edge = 15.0; // the page side space
 }
 
-void _soon(BuildContext context) =>
-    showMsg(context, 'This is a preview. It is not connected yet.');
+/// What a tap on a button that only looks the part does. In the seller's
+/// preview it says so; on the shared page (see [BuyerProductScreen.share]) it
+/// opens the real product on the website, so nothing is a dead end.
+class PreviewTaps extends InheritedWidget {
+  final void Function(BuildContext context) open;
+  const PreviewTaps({super.key, required this.open, required super.child});
+
+  /// True on the shared page, where taps leave for the website.
+  static bool isShared(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<PreviewTaps>() != null;
+
+  /// Runs the tap. [preview] is what the seller's preview does instead.
+  static void fire(BuildContext context, {void Function()? preview}) {
+    final taps = context.getInheritedWidgetOfExactType<PreviewTaps>();
+    if (taps != null) {
+      taps.open(context);
+    } else if (preview != null) {
+      preview();
+    } else {
+      showMsg(context, 'This is a preview. It is not connected yet.');
+    }
+  }
+
+  @override
+  bool updateShouldNotify(PreviewTaps old) => false;
+}
+
+void _soon(BuildContext context) => PreviewTaps.fire(context);
 
 /// The website header: a small line, and the logo with cart and user icons.
 /// (The website's search bar is left out on purpose.) Cart and user only look
@@ -110,7 +136,9 @@ class BreadcrumbBar extends StatelessWidget {
       child: Row(
         children: [
           InkWell(
-            onTap: () => Navigator.maybePop(context),
+            onTap: () => PreviewTaps.isShared(context)
+                ? PreviewTaps.fire(context)
+                : Navigator.maybePop(context),
             child: const Text(
               'Home',
               style: TextStyle(fontSize: 14, color: Site.link),
@@ -332,7 +360,10 @@ class _AddToCartRowState extends State<AddToCartRow> {
                 length: NudgeTiming.cartLength,
                 lock: widget.lock,
                 child: FilledButton(
-                  onPressed: () => showMsg(context, 'The cart is coming soon.'),
+                  onPressed: () => PreviewTaps.fire(
+                    context,
+                    preview: () => showMsg(context, 'The cart is coming soon.'),
+                  ),
                   style: FilledButton.styleFrom(
                     backgroundColor: Site.yellow,
                     foregroundColor: Colors.black,

@@ -19,7 +19,21 @@ class BuyerProductScreen extends StatefulWidget {
 
   /// Only for tests: makes the shuffle of the comment strip predictable.
   final Random? random;
-  const BuyerProductScreen({super.key, required this.productId, this.random});
+
+  /// The page a buyer gets from a shared link, not the seller's preview: no
+  /// "how buyers will see it" note, and every button opens the real product
+  /// on the website.
+  final bool share;
+
+  /// How to open the website (tests replace it; the default opens the browser).
+  final void Function(BuildContext context, String url)? onOpenWebsite;
+  const BuyerProductScreen({
+    super.key,
+    required this.productId,
+    this.random,
+    this.share = false,
+    this.onOpenWebsite,
+  });
 
   @override
   State<BuyerProductScreen> createState() => _BuyerProductScreenState();
@@ -33,7 +47,9 @@ class _BuyerProductScreenState extends State<BuyerProductScreen> {
     _scroll.addListener(_checkPeek);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      showMsg(context, 'This is how buyers will see your product.');
+      if (!widget.share) {
+        showMsg(context, 'This is how buyers will see your product.');
+      }
       _checkPeek();
     });
   }
@@ -87,7 +103,7 @@ class _BuyerProductScreenState extends State<BuyerProductScreen> {
     final soldOut = p.isOut;
     const edge = EdgeInsets.symmetric(horizontal: Site.edge);
 
-    return Scaffold(
+    final page = Scaffold(
       backgroundColor: Colors.white,
       // Only the comments strip is stuck to the bottom. The page is a preview of
       // what the buyer sees; anything a buyer taps goes to the website.
@@ -180,7 +196,16 @@ class _BuyerProductScreenState extends State<BuyerProductScreen> {
         ),
       ),
     );
+    if (!widget.share) return page;
+    // A shared page: every button leaves for the real product on the website.
+    final website = p.sourceUrl.isNotEmpty ? p.sourceUrl : 'https://a2z2go.com';
+    return PreviewTaps(
+      open: (ctx) => (widget.onOpenWebsite ?? _openWebsite)(ctx, website),
+      child: page,
+    );
   }
+
+  void _openWebsite(BuildContext context, String url) => openLink(context, url);
 
   /// The glimpse above the bottom bar: the count and the first real comment.
   Widget _peekStrip(Product p) {

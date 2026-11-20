@@ -10,19 +10,36 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
+import '../../data/sample_data.dart';
 import '../../widgets/common.dart';
 import 'buyer_product_screen.dart';
 
-/// The link a buyer would open. A product listed on the shop's website shares
+/// The sample share page: a web version of the buyer page with the app's sample
+/// products and made-up comments (see `lib/share_web.dart`). Published on
+/// GitHub Pages.
+const samplePageAddress = 'https://kyaikodev.github.io/A2Z2GO-Seller-App/';
+
+/// The sample products by SKU, with the website link each one comes with.
+final _sampleLinks = {for (final s in sampleProducts) s.sku: s.sourceUrl};
+
+/// True for a product that came from "Load sample data" and has not had its
+/// website link changed. (A seller's own product that happens to use a sample
+/// SKU does not count.)
+bool isSample(Product p) => _sampleLinks[p.sku] == p.sourceUrl;
+
+/// The link a buyer would open. A sample product shares the sample page, so the
+/// QR can be tried on any phone. A product listed on the shop's website shares
 /// that real page; otherwise this is a placeholder address that becomes a real
 /// page once the shop server is connected. (The product's own id is unique
 /// everywhere; a SKU is only unique inside one shop.)
-String shareLink(Product p) => p.sourceUrl.isNotEmpty
+String shareLink(Product p) => isSample(p)
+    ? '$samplePageAddress#/product/${Uri.encodeComponent(p.sku)}'
+    : p.sourceUrl.isNotEmpty
     ? p.sourceUrl
     : 'https://a2z2go.com/p/${Uri.encodeComponent(p.id)}';
 
 /// True when [shareLink] points at a real page, not the placeholder.
-bool hasRealLink(Product p) => p.sourceUrl.isNotEmpty;
+bool hasRealLink(Product p) => isSample(p) || p.sourceUrl.isNotEmpty;
 
 /// The text sent to a chat or post: name, price and link.
 String shareMessage(Product p) =>
@@ -176,6 +193,20 @@ Future<void> showShareSheet(BuildContext context, Product p) {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 13),
             ),
+            if (isSample(p)) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE2F6FE),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Sample link. Scan it or tap it on any phone to open the sample page, which has made-up comments.',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+            ],
             if (!hasRealLink(p)) ...[
               const SizedBox(height: 8),
               Container(
