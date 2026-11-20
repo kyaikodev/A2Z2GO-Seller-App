@@ -98,7 +98,15 @@ Map<SocialPlatform, List<SocialPost>> groupByPlatform(List<SocialPost> posts) {
 class CommentAvatar extends StatelessWidget {
   final String name;
   final double radius;
-  const CommentAvatar(this.name, {super.key, this.radius = 16});
+
+  /// A square (2 px corners) instead of a circle: the website's flat look.
+  final bool square;
+  const CommentAvatar(
+    this.name, {
+    super.key,
+    this.radius = 16,
+    this.square = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +118,27 @@ class CommentAvatar extends StatelessWidget {
         letter = ch.toUpperCase();
         break;
       }
+    }
+    if (square) {
+      return Container(
+        width: radius * 2,
+        height: radius * 2,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF4F4F4),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: letter == null
+            ? Icon(Icons.person_outline, size: radius, color: Brand.muted)
+            : Text(
+                letter,
+                style: TextStyle(
+                  color: const Color(0xFF666666),
+                  fontWeight: FontWeight.w500,
+                  fontSize: radius * 0.95,
+                ),
+              ),
+      );
     }
     return CircleAvatar(
       radius: radius,

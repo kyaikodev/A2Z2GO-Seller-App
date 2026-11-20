@@ -49,6 +49,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _source = TextEditingController();
   final _desc = TextEditingController();
   final _price = TextEditingController();
+  final _oldPrice = TextEditingController();
   final _cost = TextEditingController();
   final _stock = TextEditingController(text: '0');
   final _low = TextEditingController(text: '5');
@@ -85,6 +86,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         _source.text = p.sourceUrl;
         _desc.text = p.description;
         _price.text = plainAmount(p.price);
+        _oldPrice.text = p.oldPrice > 0 ? plainAmount(p.oldPrice) : '';
         _cost.text = plainAmount(p.cost);
         _low.text = p.lowStockAt.toString();
         _active = p.active;
@@ -106,6 +108,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       _source,
       _desc,
       _price,
+      _oldPrice,
       _cost,
       _stock,
       _low,
@@ -390,6 +393,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           sourceUrl: _source.text.trim(),
           description: _desc.text.trim(),
           price: parseMoney(_price.text),
+          oldPrice: parseMoney(_oldPrice.text),
           cost: parseMoney(_cost.text),
           stock: int.tryParse(_stock.text.trim()) ?? 0,
           lowStockAt: int.tryParse(_low.text.trim()) ?? 5,
@@ -408,6 +412,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         sourceUrl: _source.text.trim(),
         description: _desc.text.trim(),
         price: parseMoney(_price.text),
+        oldPrice: parseMoney(_oldPrice.text),
         cost: parseMoney(_cost.text),
         lowStockAt: int.tryParse(_low.text.trim()) ?? 5,
         images: finalPhotos,
@@ -709,6 +714,34 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 14),
+            // Optional: shown struck through with a "-50%" badge on the buyer page.
+            TextFormField(
+              controller: _oldPrice,
+              textInputAction: TextInputAction.next,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+              ],
+              decoration: const InputDecoration(
+                labelText: 'Old price before discount (optional)',
+                prefixText: '₱ ',
+              ),
+              validator: (v) {
+                final base = moneyValidator(
+                  v,
+                  allowZero: false,
+                  required: false,
+                );
+                if (base != null) return base;
+                if (v == null || v.trim().isEmpty) return null;
+                return parseMoney(v) <= parseMoney(_price.text)
+                    ? 'Must be higher than the selling price'
+                    : null;
+              },
             ),
             const SizedBox(height: 14),
             Row(

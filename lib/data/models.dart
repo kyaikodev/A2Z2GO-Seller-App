@@ -63,6 +63,10 @@ class Product {
   String category;
   String description;
   double price;
+
+  /// The price before a discount (shown struck through, with a "-50%" badge).
+  /// 0 means no discount.
+  double oldPrice;
   double cost;
   int stock;
   int lowStockAt;
@@ -87,6 +91,7 @@ class Product {
     this.category = 'General',
     this.description = '',
     required this.price,
+    this.oldPrice = 0,
     this.cost = 0,
     this.stock = 0,
     this.lowStockAt = 5,
@@ -115,6 +120,11 @@ class Product {
 
   bool get readyForBuyers => missingForBuyers.isEmpty;
 
+  /// The discount in whole percent, or 0 when there is no old price.
+  int get discountPercent => oldPrice > price && price > 0
+      ? ((oldPrice - price) / oldPrice * 100).round()
+      : 0;
+
   bool get isOut => stock <= 0;
   bool get isLow => stock > 0 && stock <= lowStockAt;
   double get margin => price <= 0 ? 0 : (price - cost) / price;
@@ -126,6 +136,7 @@ class Product {
     'category': category,
     'description': description,
     'price': price,
+    'oldPrice': oldPrice,
     'cost': cost,
     'stock': stock,
     'lowStockAt': lowStockAt,
@@ -151,6 +162,7 @@ class Product {
       category: j['category'] as String? ?? 'General',
       description: j['description'] as String? ?? '',
       price: (j['price'] as num?)?.toDouble() ?? 0,
+      oldPrice: (j['oldPrice'] as num?)?.toDouble() ?? 0,
       cost: (j['cost'] as num?)?.toDouble() ?? 0,
       stock: (j['stock'] as num?)?.toInt() ?? 0,
       lowStockAt: (j['lowStockAt'] as num?)?.toInt() ?? 5,

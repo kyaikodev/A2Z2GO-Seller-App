@@ -329,6 +329,7 @@ class AppStore extends ChangeNotifier {
     required String sourceUrl,
     required String description,
     required double price,
+    double oldPrice = 0,
     required double cost,
     required int lowStockAt,
     required List<String> images,
@@ -346,6 +347,7 @@ class AppStore extends ChangeNotifier {
       ..sourceUrl = sourceUrl
       ..description = description
       ..price = price
+      ..oldPrice = oldPrice
       ..cost = cost
       ..lowStockAt = lowStockAt
       ..images = images

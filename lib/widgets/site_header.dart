@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../core/theme.dart';
 
-/// The top of the A2Z2GO website on a phone: the red tag logo, then a search
-/// bar with a yellow "Search" button.
-class SiteHeader extends StatefulWidget {
+/// The search bar of the A2Z2GO website: a box and a yellow "Search" button.
+class _SearchRow extends StatefulWidget {
   final ValueChanged<String> onSearch;
-  const SiteHeader({super.key, required this.onSearch});
+  const _SearchRow({required this.onSearch});
 
   @override
-  State<SiteHeader> createState() => _SiteHeaderState();
+  State<_SearchRow> createState() => _SearchRowState();
 }
 
-class _SiteHeaderState extends State<SiteHeader> {
+class _SearchRowState extends State<_SearchRow> {
   final _text = TextEditingController();
 
   @override
@@ -22,6 +21,45 @@ class _SiteHeaderState extends State<SiteHeader> {
   }
 
   void _submit() => widget.onSearch(_text.text.trim());
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _text,
+            textInputAction: TextInputAction.search,
+            onSubmitted: (_) => _submit(),
+            decoration: const InputDecoration(
+              hintText: "I'm looking for...",
+              isDense: true,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        FilledButton(
+          onPressed: _submit,
+          style: FilledButton.styleFrom(
+            backgroundColor: Brand.accent,
+            foregroundColor: Brand.navy,
+            minimumSize: const Size(0, 48),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          child: const Text('Search'),
+        ),
+      ],
+    );
+  }
+}
+
+const _tagLogo = 'assets/brand/a2z_tag.png';
+
+/// The top of the A2Z2GO website on a phone: the red tag logo, then a search
+/// bar with a yellow "Search" button.
+class SiteHeader extends StatelessWidget {
+  final ValueChanged<String> onSearch;
+  const SiteHeader({super.key, required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -36,38 +74,9 @@ class _SiteHeaderState extends State<SiteHeader> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            'assets/brand/a2z_tag.png',
-            height: 34,
-            semanticLabel: 'A2Z2GO',
-          ),
+          Image.asset(_tagLogo, height: 34, semanticLabel: 'A2Z2GO'),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _text,
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (_) => _submit(),
-                  decoration: const InputDecoration(
-                    hintText: "I'm looking for...",
-                    isDense: true,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: _submit,
-                style: FilledButton.styleFrom(
-                  backgroundColor: Brand.accent,
-                  foregroundColor: Brand.navy,
-                  minimumSize: const Size(0, 48),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                child: const Text('Search'),
-              ),
-            ],
-          ),
+          _SearchRow(onSearch: onSearch),
         ],
       ),
     );

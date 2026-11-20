@@ -41,7 +41,7 @@ Everything is stored **on the seller's phone**. There is no server yet (see sect
 
 ## 2. Before you start
 
-1. **Install the app.** Copy the app file (`A2Z2GO-Seller-v1.0.31+32.apk`) to an Android phone and open it. Android may
+1. **Install the app.** Copy the app file (`A2Z2GO-Seller-v1.0.37+38.apk`) to an Android phone and open it. Android may
    ask to allow installing from your files or browser; allow it for this one install.
 2. **Internet** is needed only for four things: autofilling a product from a web page, reading comments from social
    posts, loading product photos from a link, and sharing. Everything else works offline.
@@ -216,10 +216,13 @@ Product page → **Buyer page → Share and preview** (available once the produc
   photo attached), plus **Copy link**;
 - **Preview as buyer**: shows exactly what a buyer will see.
 
-The **buyer page** shows the product photos, then (in the same order as the A2Z2GO website) the name, SKU, vendor, the orange price and the stock, then the description, and a section
+The **buyer page** is made to look like the A2Z2GO website's phone product page: the website header and search bar, the
+"Home / product" trail, the name, SKU, share buttons, the photo (with an orange discount tag when the product has an old
+price), the vendor, the orange price (old price struck through), the stock, the quantity box and **Add To Cart**, the grey
+box of store promises, and grey tabs that open one at a time. Under the price a blue line such as "12 comments from TikTok, Facebook" jumps straight to the comments. Where the website has "Reviews", the app has the tab
 **"What people are saying"**: the social proof as **tabs** (Facebook, TikTok, Instagram…) that can be tapped or
 **swiped**, each showing three comments, a link to the original post, and a **See all** button for the rest. If nothing
-is touched for a few seconds, the next tab opens by itself.
+is touched for a few seconds, the next tab opens by itself. The cart, share, search and menu buttons only look the part for now.
 
 > **Honest note:** if the product was imported from a web page, the link points to that real page. Otherwise it is a
 > placeholder address that becomes a real page once the shop server exists. The **Add to cart** button on the buyer page

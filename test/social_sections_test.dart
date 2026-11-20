@@ -85,13 +85,9 @@ void main() {
       await t.pump(const Duration(milliseconds: 400));
 
       // one tab per social, side by side, each with its comment count
-      expect(find.text('TikTok'), findsOneWidget);
-      expect(find.text('Facebook'), findsOneWidget);
-      expect(
-        find.text('7'),
-        findsNWidgets(2),
-      ); // tab count + "Comments 7" heading
-      expect(find.text('2'), findsOneWidget);
+      expect(find.text('TikTok (7)'), findsOneWidget);
+      expect(find.text('Facebook (2)'), findsOneWidget);
+      expect(find.text('Comments (7)'), findsOneWidget); // the list heading
 
       // the first tab (TikTok) shows 3 comments and a button for all 7
       expect(find.text('tiktok comment 3'), findsOneWidget);
@@ -107,7 +103,7 @@ void main() {
       await t.pumpAndSettle();
 
       // tapping the Facebook tab swaps the content, no scrolling needed
-      await t.tap(find.text('Facebook'));
+      await t.tap(find.text('Facebook (2)'));
       await t.pumpAndSettle();
       expect(find.text('facebook comment 2'), findsOneWidget);
       expect(find.text('tiktok comment 1'), findsNothing);
@@ -175,7 +171,7 @@ void main() {
     // 5 quiet seconds: nothing yet. A touch starts the count again.
     await t.pump(const Duration(seconds: 5));
     expect(find.text('tiktok comment 1'), findsOneWidget);
-    await t.tap(find.text('What people are saying'));
+    await t.tap(find.text('Soap').first); // any touch on the page
     await t.pump(const Duration(seconds: 5));
     expect(find.text('tiktok comment 1'), findsOneWidget);
 
@@ -221,7 +217,7 @@ void main() {
       ),
     );
     await t.pump(const Duration(milliseconds: 400));
-    for (final name in ['Facebook', 'TikTok', 'Instagram']) {
+    for (final name in ['Facebook (3)', 'TikTok (25)', 'Instagram (0)']) {
       final box = t.getRect(find.text(name));
       expect(
         box.left >= 0 && box.right <= 320,
@@ -230,7 +226,7 @@ void main() {
       );
     }
     // a tab with no comments says so instead of staying blank
-    await t.tap(find.text('Instagram'));
+    await t.tap(find.text('Instagram (0)'));
     await t.pumpAndSettle();
     expect(find.text('No comments added yet'), findsOneWidget);
   });
